@@ -1,9 +1,11 @@
 import { Alert, Button, StyleSheet } from 'react-native';
 import { View } from '@/components/Themed';
 import { usePriceTable } from '@/src/hooks/priceTable';
+import { useNavigation } from 'expo-router';
 
 export default function ModalScreen() {
   const { clearData } = usePriceTable();
+  const { goBack } = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -14,7 +16,13 @@ export default function ModalScreen() {
               text: 'Cancel',
               style: 'cancel',
             },
-            { text: 'OK', onPress: clearData },
+            {
+              text: 'OK',
+              onPress() {
+                clearData();
+                goBack();
+              },
+            },
           ]);
         }}
         title={'Clear Data'}
