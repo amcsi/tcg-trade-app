@@ -1,21 +1,40 @@
-import { StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
+import { usePriceTable } from '@/src/hooks/priceTable';
+import DataTable from '@/components/DataTable';
 
 export default function TabOneScreen() {
+  const { total, tableState, setValue } = usePriceTable();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+      <View style={styles.horizontal}>
+        <Text>Total: $</Text>
+        <Text style={styles.title}> {formatter.format(total)}</Text>
+      </View>
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <DataTable tableState={tableState} setValue={setValue} />
+      </ScrollView>
     </View>
   );
 }
 
+const formatter = new Intl.NumberFormat();
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+  },
+  contentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  horizontal: {
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
