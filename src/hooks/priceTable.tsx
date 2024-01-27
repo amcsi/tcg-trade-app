@@ -1,8 +1,10 @@
 import { useId, useMemo, useState } from 'react';
 import { produce } from 'immer';
+import { create } from 'zustand';
 
 export function usePriceTable() {
-  const [tableState, setTableState] = useState(newTableState);
+  const state = usePriceTableStore();
+  const { tableState, setValue, clearData } = state;
 
   const total = useMemo(() => {
     return tableState.reduce((acc, v) => {
@@ -11,29 +13,35 @@ export function usePriceTable() {
     }, 0);
   }, [tableState]);
 
-  return { total, tableState, setValue };
-
-  function setValue(index: number, property: keyof TableRow, value: string) {
-    setTableState((tableState) =>
-      produce(tableState, (draft) => {
-        draft[index][property] = value;
-      }),
-    );
-  }
+  return { total, tableState, setValue, clearData };
 }
 
+const usePriceTableStore = create<State>((set) => ({
+  tableState: newTableState(),
+  clearData() {
+    set({
+      tableState: newTableState(),
+    });
+  },
+  setValue(index: number, property: keyof TableRow, value: string) {
+    set(({ tableState }) => ({
+      tableState: produce(tableState, (draft) => {
+        draft[index][property] = value;
+      }),
+    }));
+  },
+}));
+
+type State = {
+  tableState: ReturnType<typeof newTableState>;
+  setValue: (index: number, property: keyof TableRow, value: string) => void;
+  clearData: () => void;
+};
+
 function newTableState() {
-  return [
-    {
-      id: newId(),
-      name: '',
-      amount: '0',
-      price: '',
-    },
-    ...Array(100)
-      .fill(null)
-      .map(() => ({ id: newId(), name: '', amount: '', price: '' })),
-  ];
+  return Array(100)
+    .fill(null)
+    .map(() => ({ id: newId(), name: '', amount: '', price: '' }));
 }
 
 function newId() {
