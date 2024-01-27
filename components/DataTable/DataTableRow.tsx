@@ -1,15 +1,18 @@
 import React from 'react';
 import { TableRow, usePriceTable } from '@/src/hooks/priceTable';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
-export default function DataTableRow({ item: { amount, name, price }, setValue }: Props) {
+export default function DataTableRow({ item: { amount, name, price }, index, setValue }: Props) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const textInputStyle = [styles.textInput, { borderColor: colors.text, color: colors.text }];
   return (
     <View style={styles.container}>
+      <View style={styles.amount}>
+        <Text style={{ color: colors.text }}>{index + 1}</Text>
+      </View>
       <View style={styles.amount}>
         <TextInput
           style={textInputStyle}
@@ -42,6 +45,7 @@ export default function DataTableRow({ item: { amount, name, price }, setValue }
 }
 
 type Props = {
+  index: number;
   item: ReturnType<typeof usePriceTable>['tableState'][number];
   setValue: (property: keyof TableRow, value: string) => void;
 };
@@ -57,6 +61,9 @@ const styles = StyleSheet.create({
   },
   amount: {
     width: 25,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   price: {
     width: 60,

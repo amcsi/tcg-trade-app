@@ -7,7 +7,12 @@ export default function DataTable({ setValue, tableState }: Props) {
   return (
     <View>
       {tableState.map((item, index) => (
-        <DataTableRow key={item.id} item={item} setValue={setValue.bind(null, index)} />
+        <DataTableRow
+          key={item.id}
+          item={item}
+          index={index}
+          setValue={setValue.bind(null, index)}
+        />
       ))}
     </View>
   );
