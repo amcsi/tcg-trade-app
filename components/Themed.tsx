@@ -3,17 +3,20 @@
  * https://docs.expo.io/guides/color-schemes/
  */
 
-import { Text as DefaultText, View as DefaultView } from 'react-native';
+import { Linking, Text as DefaultText, View as DefaultView } from 'react-native';
 
 import Colors from '@/constants/Colors';
-import { useColorScheme } from './useColorScheme';
+import { useColorScheme } from 'react-native';
 
 type ThemeProps = {
   lightColor?: string;
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText['props'];
+export type TextProps = ThemeProps &
+  DefaultText['props'] & {
+    colorName?: keyof typeof Colors.light & keyof typeof Colors.dark;
+  };
 export type ViewProps = ThemeProps & DefaultView['props'];
 
 export function useThemeColor(
@@ -32,9 +35,13 @@ export function useThemeColor(
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, props.colorName ?? 'text');
 
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
+}
+
+export function Link(props: TextProps & { href: string }) {
+  return <Text colorName="link" onPress={() => Linking.openURL(props.href)} {...props} />;
 }
 
 export function View(props: ViewProps) {
