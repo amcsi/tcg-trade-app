@@ -1,9 +1,10 @@
-import { useId, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { produce } from 'immer';
 import { create } from 'zustand';
 
-export function usePriceTable() {
-  const state = usePriceTableStore();
+export function usePriceTable(instance: StoreInstance) {
+  //eslint-disable-next-line react-hooks/rules-of-hooks
+  const state = instance === 'top' ? usePriceTableStoreTop() : usePriceTableStoreBot();
   const { tableState, setValue, clearData } = state;
 
   const total = useMemo(() => {
@@ -16,21 +17,28 @@ export function usePriceTable() {
   return { total, tableState, setValue, clearData };
 }
 
-const usePriceTableStore = create<State>((set) => ({
-  tableState: newTableState(),
-  clearData() {
-    set({
-      tableState: newTableState(),
-    });
-  },
-  setValue(index: number, property: keyof TableRow, value: string) {
-    set(({ tableState }) => ({
-      tableState: produce(tableState, (draft) => {
-        draft[index][property] = value;
-      }),
-    }));
-  },
-}));
+function createPriceTableStore() {
+  return create<State>((set) => ({
+    tableState: newTableState(),
+    clearData() {
+      set({
+        tableState: newTableState(),
+      });
+    },
+    setValue(index: number, property: keyof TableRow, value: string) {
+      set(({ tableState }) => ({
+        tableState: produce(tableState, (draft) => {
+          draft[index][property] = value;
+        }),
+      }));
+    },
+  }));
+}
+
+const usePriceTableStoreTop = createPriceTableStore();
+const usePriceTableStoreBot = createPriceTableStore();
+
+type StoreInstance = 'top' | 'bottom';
 
 type State = {
   tableState: ReturnType<typeof newTableState>;

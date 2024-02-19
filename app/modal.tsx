@@ -3,7 +3,8 @@ import { View } from '@/components/Themed';
 import { usePriceTable } from '@/src/hooks/priceTable';
 
 export default function ModalScreen() {
-  const { clearData } = usePriceTable();
+  const priceTableTop = usePriceTable('top');
+  const priceTableBottom = usePriceTable('bottom');
 
   return (
     <View style={styles.container}>
@@ -14,7 +15,13 @@ export default function ModalScreen() {
               text: 'Cancel',
               style: 'cancel',
             },
-            { text: 'OK', onPress: clearData },
+            {
+              text: 'OK',
+              onPress() {
+                priceTableTop.clearData();
+                priceTableBottom.clearData();
+              },
+            },
           ]);
         }}
         title={'Clear Data'}
