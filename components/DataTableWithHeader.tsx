@@ -3,14 +3,18 @@ import { Text, View } from '@/components/Themed';
 import { ScrollView, StyleSheet } from 'react-native';
 import DataTable from '@/components/DataTable';
 import { usePriceTable } from '@/src/hooks/priceTable';
+import { numberFormatter } from '@/src/format';
 
-export default function DataTableWithHeader({ priceTable }: Props) {
+export default function DataTableWithHeader({ priceTable, isLarger }: Props) {
   const { tableState, total, setValue, deleteEmptyRowsExceptIndex } = priceTable;
   return (
     <View style={styles.container}>
       <View style={styles.horizontal}>
-        <Text>Total: $</Text>
-        <Text style={styles.title}> {formatter.format(total)}</Text>
+        <Text style={{ textDecorationLine: isLarger ? 'underline' : undefined }}>
+          <Text>Total: $</Text>
+          <Text style={styles.title}> {numberFormatter.format(total)}</Text>
+          {isLarger ? <Text> (&gt;)</Text> : null}
+        </Text>
       </View>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <DataTable
@@ -23,10 +27,9 @@ export default function DataTableWithHeader({ priceTable }: Props) {
   );
 }
 
-const formatter = new Intl.NumberFormat();
-
 interface Props {
   priceTable: ReturnType<typeof usePriceTable>;
+  isLarger: boolean;
 }
 
 const styles = StyleSheet.create({
