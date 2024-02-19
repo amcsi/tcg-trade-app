@@ -47,7 +47,7 @@ type State = {
 };
 
 function newTableState() {
-  return Array(100)
+  return Array(30)
     .fill(null)
     .map(() => ({ id: newId(), name: '', amount: '', price: '' }));
 }
