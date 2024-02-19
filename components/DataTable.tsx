@@ -13,6 +13,7 @@ export default function DataTable({ setValue, tableState, deleteEmptyRowsExceptI
           index={index}
           setValue={setValue.bind(null, index)}
           deleteEmptyRows={deleteEmptyRowsExceptIndex.bind(null, index)}
+          rowCount={tableState.length}
         />
       ))}
     </View>

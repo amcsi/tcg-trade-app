@@ -5,6 +5,7 @@ import Colors from '@/constants/Colors';
 
 export default function DataTableRow({
   item: { amount, name, price },
+  rowCount,
   index,
   setValue,
   deleteEmptyRows,
@@ -12,6 +13,8 @@ export default function DataTableRow({
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const textInputStyle = [styles.textInput, { borderColor: colors.text, color: colors.text }];
+  const isLastRow = index === rowCount - 1;
+  const placeholderTextColor = colors.placeholderTextColor;
 
   return (
     <View style={styles.container}>
@@ -27,6 +30,8 @@ export default function DataTableRow({
           selectTextOnFocus
           onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'amount')}
+          placeholder={'1x'}
+          placeholderTextColor={placeholderTextColor}
         />
       </View>
       <View style={styles.name}>
@@ -36,6 +41,8 @@ export default function DataTableRow({
           selectTextOnFocus
           onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'name')}
+          placeholder={isLastRow ? 'Card Name' : ''}
+          placeholderTextColor={placeholderTextColor}
         />
       </View>
       <View style={styles.price}>
@@ -46,6 +53,8 @@ export default function DataTableRow({
           selectTextOnFocus
           onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'price')}
+          placeholder={isLastRow ? 'Price' : ''}
+          placeholderTextColor={placeholderTextColor}
         />
       </View>
     </View>
@@ -54,6 +63,7 @@ export default function DataTableRow({
 
 type Props = {
   index: number;
+  rowCount: number;
   item: ReturnType<typeof usePriceTable>['tableState'][number];
   setValue: (property: keyof TableRow, value: string) => void;
   deleteEmptyRows: () => void;
