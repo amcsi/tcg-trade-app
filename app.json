@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.amcsi.tcgtradeapp"
     },
     "web": {
       "bundler": "metro",
@@ -30,6 +31,14 @@
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "bdd65cb9-ed3a-41bd-8e83-c4924ac576cf"
+      }
     }
   }
 }
