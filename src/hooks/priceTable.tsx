@@ -29,6 +29,9 @@ function createPriceTableStore() {
       set(({ tableState }) => ({
         tableState: produce(tableState, (draft) => {
           draft[index][property] = value;
+          if (index + 1 >= tableState.length) {
+            draft.push(newTableRow());
+          }
         }),
       }));
     },
@@ -47,9 +50,11 @@ type State = {
 };
 
 function newTableState() {
-  return Array(30)
-    .fill(null)
-    .map(() => ({ id: newId(), name: '', amount: '', price: '' }));
+  return Array(1).fill(null).map(newTableRow);
+}
+
+function newTableRow() {
+  return { id: newId(), name: '', amount: '', price: '' };
 }
 
 function newId() {
