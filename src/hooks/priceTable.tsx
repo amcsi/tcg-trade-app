@@ -5,7 +5,7 @@ import { create } from 'zustand';
 export function usePriceTable(instance: StoreInstance) {
   //eslint-disable-next-line react-hooks/rules-of-hooks
   const state = instance === 'top' ? usePriceTableStoreTop() : usePriceTableStoreBot();
-  const { tableState, setValue, clearData } = state;
+  const { tableState, setValue, clearData, deleteEmptyRowsExceptIndex } = state;
 
   const total = useMemo(() => {
     return tableState.reduce((acc, v) => {
@@ -14,7 +14,7 @@ export function usePriceTable(instance: StoreInstance) {
     }, 0);
   }, [tableState]);
 
-  return { total, tableState, setValue, clearData };
+  return { total, tableState, setValue, clearData, deleteEmptyRowsExceptIndex };
 }
 
 function createPriceTableStore() {
@@ -35,8 +35,24 @@ function createPriceTableStore() {
         }),
       }));
     },
+    deleteEmptyRowsExceptIndex(exceptIndex: number) {
+      set(({ tableState }) => ({
+        tableState: produce(tableState, (draft) => {
+          for (let index = tableState.length - 2; index >= 0; index--) {
+            if (index === exceptIndex) {
+              continue;
+            }
+            if (properties.every((property) => draft[index][property] === '')) {
+              draft.splice(index, 1);
+            }
+          }
+        }),
+      }));
+    },
   }));
 }
+
+const properties: Array<keyof TableRow> = ['name', 'amount', 'price'];
 
 const usePriceTableStoreTop = createPriceTableStore();
 const usePriceTableStoreBot = createPriceTableStore();
@@ -47,6 +63,7 @@ type State = {
   tableState: ReturnType<typeof newTableState>;
   setValue: (index: number, property: keyof TableRow, value: string) => void;
   clearData: () => void;
+  deleteEmptyRowsExceptIndex: (exceptIndex: number) => void;
 };
 
 function newTableState() {
@@ -61,4 +78,4 @@ function newId() {
   return String(Math.random());
 }
 
-export type TableRow = ReturnType<typeof newTableState>[number];
+export type TableRow = ReturnType<typeof newTableRow>;

@@ -5,7 +5,7 @@ import DataTable from '@/components/DataTable';
 import { usePriceTable } from '@/src/hooks/priceTable';
 
 export default function DataTableWithHeader({ priceTable }: Props) {
-  const { tableState, total, setValue } = priceTable;
+  const { tableState, total, setValue, deleteEmptyRowsExceptIndex } = priceTable;
   return (
     <View style={styles.container}>
       <View style={styles.horizontal}>
@@ -13,7 +13,11 @@ export default function DataTableWithHeader({ priceTable }: Props) {
         <Text style={styles.title}> {formatter.format(total)}</Text>
       </View>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <DataTable tableState={tableState} setValue={setValue} />
+        <DataTable
+          tableState={tableState}
+          setValue={setValue}
+          deleteEmptyRowsExceptIndex={deleteEmptyRowsExceptIndex}
+        />
       </ScrollView>
     </View>
   );

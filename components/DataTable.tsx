@@ -3,7 +3,7 @@ import { usePriceTable } from '@/src/hooks/priceTable';
 import { View } from 'react-native';
 import DataTableRow from '@/components/DataTable/DataTableRow';
 
-export default function DataTable({ setValue, tableState }: Props) {
+export default function DataTable({ setValue, tableState, deleteEmptyRowsExceptIndex }: Props) {
   return (
     <View>
       {tableState.map((item, index) => (
@@ -12,6 +12,7 @@ export default function DataTable({ setValue, tableState }: Props) {
           item={item}
           index={index}
           setValue={setValue.bind(null, index)}
+          deleteEmptyRows={deleteEmptyRowsExceptIndex.bind(null, index)}
         />
       ))}
     </View>
@@ -21,4 +22,5 @@ export default function DataTable({ setValue, tableState }: Props) {
 type Props = {
   tableState: ReturnType<typeof usePriceTable>['tableState'];
   setValue: ReturnType<typeof usePriceTable>['setValue'];
+  deleteEmptyRowsExceptIndex: ReturnType<typeof usePriceTable>['deleteEmptyRowsExceptIndex'];
 };

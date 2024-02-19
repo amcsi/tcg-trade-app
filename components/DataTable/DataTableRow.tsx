@@ -1,13 +1,18 @@
-import React from 'react';
 import { TableRow, usePriceTable } from '@/src/hooks/priceTable';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { useColorScheme } from '@/components/useColorScheme';
 import Colors from '@/constants/Colors';
 
-export default function DataTableRow({ item: { amount, name, price }, index, setValue }: Props) {
+export default function DataTableRow({
+  item: { amount, name, price },
+  index,
+  setValue,
+  deleteEmptyRows,
+}: Props) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const textInputStyle = [styles.textInput, { borderColor: colors.text, color: colors.text }];
+
   return (
     <View style={styles.container}>
       <View style={styles.amount}>
@@ -20,6 +25,7 @@ export default function DataTableRow({ item: { amount, name, price }, index, set
           keyboardType={'numeric'}
           value={amount}
           selectTextOnFocus
+          onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'amount')}
         />
       </View>
@@ -28,6 +34,7 @@ export default function DataTableRow({ item: { amount, name, price }, index, set
           style={textInputStyle}
           value={name}
           selectTextOnFocus
+          onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'name')}
         />
       </View>
@@ -37,6 +44,7 @@ export default function DataTableRow({ item: { amount, name, price }, index, set
           keyboardType={'numeric'}
           value={price}
           selectTextOnFocus
+          onFocus={deleteEmptyRows}
           onChangeText={setValue.bind(null, 'price')}
         />
       </View>
@@ -48,6 +56,7 @@ type Props = {
   index: number;
   item: ReturnType<typeof usePriceTable>['tableState'][number];
   setValue: (property: keyof TableRow, value: string) => void;
+  deleteEmptyRows: () => void;
 };
 
 const styles = StyleSheet.create({
