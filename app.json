@@ -2,7 +2,7 @@
   "expo": {
     "name": "tcg-trade-app",
     "slug": "tcg-trade-app",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -21,6 +21,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 2,
       "package": "com.amcsi.tcgtradeapp"
     },
     "web": {
