@@ -6,9 +6,6 @@ import { Text, View } from '@/components/Themed';
 export default function TotalCompare({ priceTable1, priceTable2 }: Props) {
   const total1 = priceTable1.total;
   const total2 = priceTable2.total;
-  if (total1 === 0 || total2 === 0) {
-    return null;
-  }
 
   const absoluteDifference = Math.abs(total2 - total1);
 
