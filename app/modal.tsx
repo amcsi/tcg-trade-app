@@ -1,6 +1,7 @@
 import { Alert, Button, StyleSheet } from 'react-native';
 import { Link, Text, View } from '@/components/Themed';
 import { usePriceTable } from '@/src/hooks/priceTable';
+import { onConfirm } from '@/src/ui';
 
 export default function ModalScreen() {
   const priceTableTop = usePriceTable('top');
@@ -10,19 +11,14 @@ export default function ModalScreen() {
     <View style={styles.container}>
       <Button
         onPress={() => {
-          Alert.alert('Are you sure?', 'Are you sure you want to clear the data from the tables?', [
-            {
-              text: 'Cancel',
-              style: 'cancel',
+          onConfirm(
+            'Are you sure?',
+            'Are you sure you want to clear the data from the tables?',
+            () => {
+              priceTableTop.clearData();
+              priceTableBottom.clearData();
             },
-            {
-              text: 'OK',
-              onPress() {
-                priceTableTop.clearData();
-                priceTableBottom.clearData();
-              },
-            },
-          ]);
+          );
         }}
         title={'Clear Tables'}
       />
