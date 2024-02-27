@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { produce } from 'immer';
 import { create } from 'zustand';
+import { parseNumber } from '@/src/format';
 
 export function usePriceTable(instance: StoreInstance) {
   //eslint-disable-next-line react-hooks/rules-of-hooks
@@ -9,8 +10,8 @@ export function usePriceTable(instance: StoreInstance) {
 
   const total = useMemo(() => {
     return tableState.reduce((acc, v) => {
-      const amount = v.amount !== '' ? Number(v.amount) || 0 : 1;
-      return acc + amount * (Number(v.price.replace(',', '.')) || 0);
+      const amount = parseNumber(v.amount) ?? 1;
+      return acc + amount * (parseNumber(v.price) ?? 0);
     }, 0);
   }, [tableState]);
 
