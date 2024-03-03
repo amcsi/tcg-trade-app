@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 import { produce } from 'immer';
 import { create } from 'zustand';
 import { parseNumber } from '@/src/format';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function usePriceTable(instance: StoreInstance) {
   //eslint-disable-next-line react-hooks/rules-of-hooks
@@ -18,45 +20,53 @@ export function usePriceTable(instance: StoreInstance) {
   return { total, tableState, setValue, clearData, deleteEmptyRowsExceptIndex };
 }
 
-function createPriceTableStore() {
-  return create<State>((set) => ({
-    tableState: newTableState(),
-    clearData() {
-      set({
+function createPriceTableStore(asyncItemName: string) {
+  return create(
+    persist<State>(
+      (set) => ({
         tableState: newTableState(),
-      });
-    },
-    setValue(index: number, property: keyof TableRow, value: string) {
-      set(({ tableState }) => ({
-        tableState: produce(tableState, (draft) => {
-          draft[index][property] = value;
-          if (index + 1 >= tableState.length) {
-            draft.push(newTableRow());
-          }
-        }),
-      }));
-    },
-    deleteEmptyRowsExceptIndex(exceptIndex: number) {
-      set(({ tableState }) => ({
-        tableState: produce(tableState, (draft) => {
-          for (let index = tableState.length - 2; index >= 0; index--) {
-            if (index === exceptIndex) {
-              continue;
-            }
-            if (properties.every((property) => draft[index][property] === '')) {
-              draft.splice(index, 1);
-            }
-          }
-        }),
-      }));
-    },
-  }));
+        clearData() {
+          set({
+            tableState: newTableState(),
+          });
+        },
+        setValue(index: number, property: keyof TableRow, value: string) {
+          set(({ tableState }) => ({
+            tableState: produce(tableState, (draft) => {
+              draft[index][property] = value;
+              if (index + 1 >= tableState.length) {
+                draft.push(newTableRow());
+              }
+            }),
+          }));
+        },
+        deleteEmptyRowsExceptIndex(exceptIndex: number) {
+          set(({ tableState }) => ({
+            tableState: produce(tableState, (draft) => {
+              for (let index = tableState.length - 2; index >= 0; index--) {
+                if (index === exceptIndex) {
+                  continue;
+                }
+                if (properties.every((property) => draft[index][property] === '')) {
+                  draft.splice(index, 1);
+                }
+              }
+            }),
+          }));
+        },
+      }),
+      {
+        name: asyncItemName,
+        storage: createJSONStorage(() => AsyncStorage),
+      },
+    ),
+  );
 }
 
 const properties: Array<keyof TableRow> = ['name', 'amount', 'price'];
 
-const usePriceTableStoreTop = createPriceTableStore();
-const usePriceTableStoreBot = createPriceTableStore();
+const usePriceTableStoreTop = createPriceTableStore('price-table-top');
+const usePriceTableStoreBot = createPriceTableStore('price-table-bottom');
 
 type StoreInstance = 'top' | 'bottom';
 
